@@ -1,4 +1,3 @@
-
 var hostWebUrl = ''
 var appWebUrl = ''
 var deptParam = ''
@@ -13,99 +12,121 @@ export function getCurrentUser() {
     return $.ajax({
         url: "../_api/web/currentuser?$select=*",
         method: "GET",
-        headers: { "Accept": "application/json; odata=verbose" }
+        headers: {
+            "Accept": "application/json; odata=verbose"
+        }
     })
 }
 
 export function getAdmins() {
     return $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Administrators')/items?@target='" + hostWebUrl + "'",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Administrators')/items?" +
+                "@target='" + hostWebUrl + "'",
         method: "GET",
-        headers: { "Accept": "application/json; odata=verbose" }
+        headers: {
+            "Accept": "application/json; odata=verbose"
+        }
     })
 }
 
 export function getSize(dept) {
     return $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Unique Codes')/items?@target='" +
-        hostWebUrl + "'&$filter=Department_x0020_Number eq '" + dept + "'",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Unique Codes')/items?@t" +
+                "arget='" + hostWebUrl + "'&$filter=Department_x0020_Number eq '" + dept + "'",
         method: "GET",
-        headers: { "Accept": "application/json; odata=verbose" }
+        headers: {
+            "Accept": "application/json; odata=verbose"
+        }
     })
 }
 
 export function getRepos() {
     return $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Repositories')/items?@target='" +
-        hostWebUrl + "'&$select=Repository",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Repositories')/items?@t" +
+                "arget='" + hostWebUrl + "'&$select=Repository",
         method: "GET",
-        headers: { "Accept": "application/json; odata=verbose" }
+        headers: {
+            "Accept": "application/json; odata=verbose"
+        }
     })
 }
 
 export function getAllDepts() {
     return $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Completeness')/items?@target='" +
-        hostWebUrl + "'&$select=*&$top=1000",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Completeness" +
+                "')/items?@target='" + hostWebUrl + "'&$select=*&$top=1000",
         method: "GET",
-        headers: { "Accept": "application/json; odata=verbose" }
+        headers: {
+            "Accept": "application/json; odata=verbose"
+        }
     })
 }
 
 export function getGeneralRetention() {
     return $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('General Retention Schedule')/items?@target='" +
-        hostWebUrl + "'&$select=*&$orderby=Function,Record_x0020_Category_x0020_ID&$top=1000",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('General Retention Sched" +
+                "ule')/items?@target='" + hostWebUrl + "'&$select=*&$orderby=Function,Record_x0020_Category_x0020_ID&$top=1000",
         method: "GET",
-        headers: { "Accept": "application/json; odata=verbose" }
+        headers: {
+            "Accept": "application/json; odata=verbose"
+        }
     })
 }
 
 export function getUserDepartments(userName) {
     return $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Information')/items?@target='" +
-        hostWebUrl + "'&$filter=Record_x0020_Liaison_x0020_Net_x eq '" + userName + "'&$top=1000",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Information'" +
+                ")/items?@target='" + hostWebUrl + "'&$filter=Record_x0020_Liaison_x0020_Net_x eq '" + userName + "'&$top=1000",
         method: "GET",
-        headers: { "Accept": "application/json; odata=verbose" }
+        headers: {
+            "Accept": "application/json; odata=verbose"
+        }
     })
 }
 
 export function getCommonRecords() {
     return $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Common Records')/items?@target='" +
-        hostWebUrl + "'&$select=*&$orderby=Function,Record_x0020_Type&$top=1000",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Common Records')/items?" +
+                "@target='" + hostWebUrl + "'&$select=*&$orderby=Function,Record_x0020_Type&$top=1000",
         method: "GET",
-        headers: { "Accept": "application/json; odata=verbose" }
+        headers: {
+            "Accept": "application/json; odata=verbose"
+        }
     })
 }
 
 export function getCompleteness() {
     return $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Completeness')/items?@target='" +
-        hostWebUrl + "'&$select=*&$top=1000",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Completeness" +
+                "')/items?@target='" + hostWebUrl + "'&$select=*&$top=1000",
         method: "GET",
-        headers: { "Accept": "application/json; odata=verbose" }
+        headers: {
+            "Accept": "application/json; odata=verbose"
+        }
     })
 }
 
 export function getDeptRecords(dept) {
     return $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Schedule')/items?@target='" +
-        hostWebUrl + "'&$filter=Department_x0020_Number eq '" + dept + "'&$orderby=Record_x0020_Type&$top=1000",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Sc" +
+                "hedule')/items?@target='" + hostWebUrl + "'&$filter=Department_x0020_Number eq '" + dept + "'&$orderby=Record_x0020_Type&$top=1000",
         method: "GET",
-        headers: { "Accept": "application/json; odata=verbose" }
+        headers: {
+            "Accept": "application/json; odata=verbose"
+        }
     })
 }
 
 export function updateSize(itemID, size) {
     var data = {
-        "__metadata": { "type": "SP.Data.Unique_x0020_CodesListItem" },
+        "__metadata": {
+            "type": "SP.Data.Unique_x0020_CodesListItem"
+        },
         "Unique_x0020_Code": size
     }
 
     $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Unique Codes')/items(" + itemID +
-        ")?@target='" + hostWebUrl + "'",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Unique Codes')/items(" + itemID + ")?@target='" + hostWebUrl + "'",
         method: "POST",
         contentType: "application/json; odata=verbose",
         data: JSON.stringify(data),
@@ -123,13 +144,15 @@ export function updateSize(itemID, size) {
 
 export function setDRS(id, drsComplete) {
     var data = {
-        "__metadata": { "type": "SP.Data.Department_x0020_CompletenessListItem" },
+        "__metadata": {
+            "type": "SP.Data.Department_x0020_CompletenessListItem"
+        },
         "DRS_x0020_Completed": drsComplete
     }
 
     $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Completeness')/items(" + id +
-        ")?@target='" + hostWebUrl + "'",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Completeness" +
+                "')/items(" + id + ")?@target='" + hostWebUrl + "'",
         method: "POST",
         contentType: "application/json;odata=verbose",
         data: JSON.stringify(data),
@@ -150,13 +173,15 @@ export function setDRS(id, drsComplete) {
 
 export function setReview(id, reviewComplete) {
     var data = {
-        "__metadata": { "type": "SP.Data.Department_x0020_CompletenessListItem" },
+        "__metadata": {
+            "type": "SP.Data.Department_x0020_CompletenessListItem"
+        },
         "Annual_x0020_Review_x0020_Comple": reviewComplete
     }
 
     $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Completeness')/items(" + id +
-        ")?@target='" + hostWebUrl + "'",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Completeness" +
+                "')/items(" + id + ")?@target='" + hostWebUrl + "'",
         method: "POST",
         contentType: "application/json;odata=verbose",
         data: JSON.stringify(data),
@@ -177,13 +202,15 @@ export function setReview(id, reviewComplete) {
 
 export function messageRead(itemID) {
     var data = {
-        "__metadata": { "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem" },
+        "__metadata": {
+            "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem"
+        },
         "New_x0020_Message": "No"
     }
 
     $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Schedule')/items(" + itemID +
-        ")?@target='" + hostWebUrl + "'",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Sc" +
+                "hedule')/items(" + itemID + ")?@target='" + hostWebUrl + "'",
         method: "POST",
         contentType: "application/json;odata=verbose",
         data: JSON.stringify(data),
@@ -206,7 +233,9 @@ export function updateRecord(itemID, newFunc, newType, newCatID, newCat, newRet,
     var data
     if (flag == 1) {
         data = {
-            "__metadata": { "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem" },
+            "__metadata": {
+                "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem"
+            },
             "Function": newFunc,
             "Record_x0020_Type": newType,
             "Record_x0020_Category_x0020_ID": newCatID,
@@ -218,10 +247,11 @@ export function updateRecord(itemID, newFunc, newType, newCatID, newCat, newRet,
             "Vital": vital,
             "Highly_x0020_Confidential": highlyConfidential
         }
-    }
-    else {
+    } else {
         data = {
-            "__metadata": { "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem" },
+            "__metadata": {
+                "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem"
+            },
             "Function": newFunc,
             "Record_x0020_Type": newType,
             "Record_x0020_Category_x0020_ID": newCatID,
@@ -235,8 +265,8 @@ export function updateRecord(itemID, newFunc, newType, newCatID, newCat, newRet,
     }
 
     $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Schedule')/items(" + itemID +
-        ")?@target='" + hostWebUrl + "'",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Sc" +
+                "hedule')/items(" + itemID + ")?@target='" + hostWebUrl + "'",
         method: "POST",
         contentType: "application/json;odata=verbose",
         data: JSON.stringify(data),
@@ -250,7 +280,8 @@ export function updateRecord(itemID, newFunc, newType, newCatID, newCat, newRet,
             location.reload()
         },
         failure: function () {
-            $('#ret-table-alert').html('</br><div class="alert alert-warning" role="alert">Server error. Record not updated.</div>')
+            $('#ret-table-alert').html('</br><div class="alert alert-warning" role="alert">Server error. Record not upda' +
+                    'ted.</div>')
         }
     })
 }
@@ -259,7 +290,9 @@ export function updateCommonRecord(itemID, newCmtsPlan, newAdminMsg, newRepo, ar
     var data
     if (flag == 1) {
         data = {
-            "__metadata": { "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem" },
+            "__metadata": {
+                "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem"
+            },
             "CommentsPlan": newCmtsPlan,
             "Message_x0020_To_x0020_Admin": newAdminMsg,
             "Repository": newRepo,
@@ -268,10 +301,11 @@ export function updateCommonRecord(itemID, newCmtsPlan, newAdminMsg, newRepo, ar
             "Highly_x0020_Confidential": highlyConfidential,
             "Status": "Pending"
         }
-    }
-    else {
+    } else {
         data = {
-            "__metadata": { "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem" },
+            "__metadata": {
+                "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem"
+            },
             "CommentsPlan": newCmtsPlan,
             "Message_x0020_To_x0020_Admin": newAdminMsg,
             "Repository": newRepo,
@@ -282,8 +316,8 @@ export function updateCommonRecord(itemID, newCmtsPlan, newAdminMsg, newRepo, ar
     }
 
     $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Schedule')/items(" + itemID +
-        ")?@target='" + hostWebUrl + "'",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Sc" +
+                "hedule')/items(" + itemID + ")?@target='" + hostWebUrl + "'",
         method: "POST",
         contentType: "application/json;odata=verbose",
         data: JSON.stringify(data),
@@ -297,15 +331,16 @@ export function updateCommonRecord(itemID, newCmtsPlan, newAdminMsg, newRepo, ar
             location.reload()
         },
         failure: function () {
-            $('#ret-table-alert').html('</br><div class="alert alert-warning" role="alert">Server error. Record not updated.</div>')
+            $('#ret-table-alert').html('</br><div class="alert alert-warning" role="alert">Server error. Record not upda' +
+                    'ted.</div>')
         }
     })
 }
 
 export function deleteRecord(row, itemID) {
     $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Schedule')/items(" + itemID +
-        ")?@target='" + hostWebUrl + "'",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Sc" +
+                "hedule')/items(" + itemID + ")?@target='" + hostWebUrl + "'",
         method: "POST",
         headers: {
             "X-RequestDigest": $("#__REQUESTDIGEST").val(),
@@ -316,14 +351,17 @@ export function deleteRecord(row, itemID) {
             location.reload()
         },
         failure: function () {
-            $('#ret-table-alert').html('</br><div class="alert alert-warning" role="alert">Server error. Record not deleted.</div>')
+            $('#ret-table-alert').html('</br><div class="alert alert-warning" role="alert">Server error. Record not dele' +
+                    'ted.</div>')
         }
     })
 }
 
 export function addUniqueRecord(dept, code, recType, recFunc, recCat, adminMsg, commentsPlan, highlyConfidential, vital, archival, recRepo) {
     var data = {
-        "__metadata": { "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem" },
+        "__metadata": {
+            "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem"
+        },
         "Department_x0020_Number": dept,
         "Code": code,
         "Function": recFunc,
@@ -338,7 +376,8 @@ export function addUniqueRecord(dept, code, recType, recFunc, recCat, adminMsg, 
         "Status": "Pending"
     }
     $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Schedule')/items?@target='" + hostWebUrl + "'",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Sc" +
+                "hedule')/items?@target='" + hostWebUrl + "'",
         method: "POST",
         contentType: "application/json;odata=verbose",
         data: JSON.stringify(data),
@@ -357,23 +396,31 @@ export function addUniqueRecord(dept, code, recType, recFunc, recCat, adminMsg, 
             $('#vital-chkbx').prop('checked', false)
             $('#archival-chkbx').prop('checked', false)
             $('#unique-alert').html('</br><div class="alert alert-success" role="alert">Record added!</div>')
-            setTimeout(function () { $('#unique-alert').empty() }, 1500)
+            setTimeout(function () {
+                $('#unique-alert').empty()
+            }, 1500)
         },
         failure: function () {
-            $('#unique-alert').html('</br><div class="alert alert-warning" role="alert">Server error. Record not added.</div>')
-            setTimeout(function () { $('#unique-alert').empty() }, 2500)
+            $('#unique-alert').html('</br><div class="alert alert-warning" role="alert">Server error. Record not adde' +
+                    'd.</div>')
+            setTimeout(function () {
+                $('#unique-alert').empty()
+            }, 2500)
         }
     })
 }
 
 export function addSize(dept, size) {
     var data = {
-        "__metadata": { "type": "SP.Data.Unique_x0020_CodesListItem" },
+        "__metadata": {
+            "type": "SP.Data.Unique_x0020_CodesListItem"
+        },
         "Department_x0020_Number": dept,
         "Unique_x0020_Code": size
     }
     $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Unique Codes')/items?@target='" + hostWebUrl + "'",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Unique Codes')/items?@t" +
+                "arget='" + hostWebUrl + "'",
         method: "POST",
         contentType: "application/json;odata=verbose",
         data: JSON.stringify(data),
@@ -389,7 +436,9 @@ export function addSize(dept, size) {
 
 export function addCommonRecord(dept, rowNum, code, func, type, arch, flag) {
     var data = {
-        "__metadata": { "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem" },
+        "__metadata": {
+            "type": "SP.Data.Department_x0020_Retention_x0020_ScheduleListItem"
+        },
         "Department_x0020_Number": dept,
         "Code": code,
         "Function": func,
@@ -401,7 +450,8 @@ export function addCommonRecord(dept, rowNum, code, func, type, arch, flag) {
         "Highly_x0020_Confidential": "No"
     }
     $.ajax({
-        url: appWebUrl + "/_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Schedule')/items?@target='" + hostWebUrl + "'",
+        url: "../_api/SP.AppContextSite(@target)/web/lists/getbytitle('Department Retention Sc" +
+                "hedule')/items?@target='" + hostWebUrl + "'",
         method: "POST",
         contentType: "application/json;odata=verbose",
         data: JSON.stringify(data),
@@ -417,8 +467,11 @@ export function addCommonRecord(dept, rowNum, code, func, type, arch, flag) {
             }
         },
         failure: function () {
-            $('#submit-alert').html('</br><div class="alert alert-warning" role="alert">Server error. Records not updated.</div>')
-            setTimeout(function () { $('#submit-alert').empty() }, 2500)
+            $('#submit-alert').html('</br><div class="alert alert-warning" role="alert">Server error. Records not upd' +
+                    'ated.</div>')
+            setTimeout(function () {
+                $('#submit-alert').empty()
+            }, 2500)
         }
     })
 }
