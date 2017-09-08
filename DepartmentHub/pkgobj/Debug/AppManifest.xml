@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--Created:cb85b80c-f585-40ff-8bfc-12ff4d0e34a9-->
+<App xmlns="http://schemas.microsoft.com/sharepoint/2012/app/manifest"
+     Name="DepartmentHub"
+     ProductID="{a118bc44-d838-4362-9f7d-350faa7e5c16}"
+     Version="2.0.0.0"
+     SharePointMinVersion="15.0.0.0"
+>
+  <Properties>
+    <StartPage>~appWebUrl/Pages/index.aspx?{StandardTokens}</StartPage>
+    <Title>DRS</Title>
+  </Properties>
+
+  <AppPrincipal>
+    <Internal />
+  </AppPrincipal>
+  <AppPermissionRequests>
+    <AppPermissionRequest Scope="http://sharepoint/content/sitecollection/web" Right="FullControl" />
+  </AppPermissionRequests>
+</App>

@@ -1,0 +1,8 @@
+C:\Users\steve\Desktop\Work\DepartmentHub\DepartmentHub\bin\Debug\DepartmentHub.pdb
+C:\Users\steve\Desktop\Work\DepartmentHub\DepartmentHub\obj\Debug\DepartmentHub.dll
+C:\Users\steve\Desktop\Work\DepartmentHub\DepartmentHub\obj\Debug\DepartmentHub.pdb
+C:\Users\steve\Desktop\Work\DepartmentHub\DepartmentHub\obj\Debug\DRS.csprojResolveAssemblyReference.cache
+C:\Users\tyler\Downloads\DepartmentHub\DepartmentHub\bin\Debug\DepartmentHub.pdb
+C:\Users\tyler\Downloads\DepartmentHub\DepartmentHub\obj\Debug\DRS.csproj.CoreCompileInputs.cache
+C:\Users\tyler\Downloads\DepartmentHub\DepartmentHub\obj\Debug\DepartmentHub.dll
+C:\Users\tyler\Downloads\DepartmentHub\DepartmentHub\obj\Debug\DepartmentHub.pdb

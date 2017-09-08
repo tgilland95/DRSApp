@@ -1,0 +1,22 @@
+﻿/* Place custom styles below */
+th {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.nav-tabs {
+    text-align: center;
+    padding-left: 100px;
+}
+
+.dept-margin {
+    padding-left: 100px;
+}
+
+.chkbx-margin {
+    padding-left: 150px;
+}
+
+#red-ast {
+  color:red;
+}

@@ -1,0 +1,8 @@
+C:\Users\steve\Desktop\DepartmentHub\DepartmentHub\bin\Debug\DepartmentHub.pdb
+C:\Users\steve\Desktop\DepartmentHub\DepartmentHub\obj\Debug\DepartmentHub.dll
+C:\Users\steve\Desktop\DepartmentHub\DepartmentHub\obj\Debug\DepartmentHub.pdb
+C:\Users\steve\Desktop\DepartmentHub\DepartmentHub\obj\Debug\DepartmentHub.csprojResolveAssemblyReference.cache
+C:\Users\steve\Desktop\Work\DepartmentHub\DepartmentHub\bin\Debug\DepartmentHub.pdb
+C:\Users\steve\Desktop\Work\DepartmentHub\DepartmentHub\obj\Debug\DepartmentHub.csprojResolveAssemblyReference.cache
+C:\Users\steve\Desktop\Work\DepartmentHub\DepartmentHub\obj\Debug\DepartmentHub.dll
+C:\Users\steve\Desktop\Work\DepartmentHub\DepartmentHub\obj\Debug\DepartmentHub.pdb
