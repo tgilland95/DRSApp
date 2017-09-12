@@ -9465,7 +9465,6 @@
 	
 	                        // adds on-click event to Save button on dialog box
 	                        $('#saveRecord').click(function () {
-	
 	                            // retrieves all new values from dialog
 	                            var itemID = itemIDLookup[$('#r-code').val()];
 	                            var newFunc = $('#r-func option:selected').val();
@@ -9498,7 +9497,7 @@
 	
 	                            // if user added new message to admin, Status will be set to 'Pending'
 	                            var notifyAdmin = 0;
-	                            if ($('#r-cat option:selected').val() != initialCat && $('#r-cat option:selected').val() != 'Select a category' || newAdminMsg != initialUserCmts || newFunc != initialFunc) {
+	                            if (newAdminMsg != initialUserCmts) {
 	                                notifyAdmin = 1;
 	                            }
 	
@@ -10876,6 +10875,7 @@
 	            "Record_x0020_Category_x0020_ID": newCatID,
 	            "CommentsPlan": newCmtsPlan,
 	            "Message_x0020_To_x0020_Admin": newAdminMsg,
+	            "Status": "Approved",
 	            "Repository": newRepo,
 	            "Archival": archival,
 	            "Vital": vital,
