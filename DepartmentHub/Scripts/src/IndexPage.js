@@ -40,7 +40,8 @@ export async function run(hWebUrl, aWebUrl, deptURLParam) {
     // if there is a department param on URL, copies it to deptParam
     deptParam = deptURLParam
 
-    // gets current user and list of admins. if user is an admin, all depts retrieved, else only depts relevant to user
+    // gets current user and list of admins. if user is an admin, all depts
+    // retrieved, else only depts relevant to user
     let userName = await util.getUserName()
     let admins = await util.getAdmins()
     if (admins.indexOf(userName) != -1) {
@@ -48,14 +49,14 @@ export async function run(hWebUrl, aWebUrl, deptURLParam) {
         let deptArr = await util.getAllDepts()
         depts = deptArr[0]
         deptNameLookup = deptArr[1]
-    }
-    else {
+    } else {
         let deptArr = await util.getDepartments(userName)
         depts = deptArr[0]
         deptNameLookup = deptArr[1]
     }
 
-    // retrieves General Retention, Common Records, Repository, and Completeness lists
+    // retrieves General Retention, Common Records, Repository, and Completeness
+    // lists
     genRetention = await util.getGeneralRetention()
     commonRecordsList = await util.getCommonRecords()
     repos = await util.getRepos()
@@ -67,14 +68,14 @@ export async function run(hWebUrl, aWebUrl, deptURLParam) {
     commonRetentionLookup = {}
     commonFunctionLookup = {}
 
-    // creates objects used to lookup values and populate drop-down lists when user submits unique record and updates unique record in 'Edit Details' dialog box
+    // creates objects used to lookup values and populate drop-down lists when user
+    // submits unique record and updates unique record in 'Edit Details' dialog box
     for (var i = 0; i < genRetention.length; i++) {
         generalRetentionLookup[genRetention[i]['Record_x0020_Category']] = genRetention[i]['Retention_x0020_Description']
         var tempList
         if (genRetention[i]['Function'] in generalFunctionLookup) {
             tempList = generalFunctionLookup[genRetention[i]['Function']]
-        }
-        else {
+        } else {
             tempList = []
         }
         tempList.push(genRetention[i]['Record_x0020_Category_x0020_ID'] + ' - ' + genRetention[i]['Record_x0020_Category'])
@@ -88,11 +89,15 @@ export async function run(hWebUrl, aWebUrl, deptURLParam) {
         commonFunctionLookup[commonRecordsList[i]['Code']] = commonRecordsList[i]['Function']
     }
 
-    // if user is not listed as Dept Liaison for any dept, print out alert on each tab and end script
+    // if user is not listed as Dept Liaison for any dept, print out alert on each
+    // tab and end script
     if (depts == "None") {
-        $('#dept-retention').html('</br><div class="alert alert-info" role="alert">You are not a part of any department</div>')
-        $('#common-records').html('</br><div class="alert alert-info" role="alert">You are not a part of any department</div>')
-        $('#unique-records').html('</br><div class="alert alert-info" role="alert">You are not a part of any department</div>')
+        $('#dept-retention').html('</br><div class="alert alert-info" role="alert">You are not a part of any depart' +
+                'ment</div>')
+        $('#common-records').html('</br><div class="alert alert-info" role="alert">You are not a part of any depart' +
+                'ment</div>')
+        $('#unique-records').html('</br><div class="alert alert-info" role="alert">You are not a part of any depart' +
+                'ment</div>')
         return
     }
 
@@ -114,11 +119,9 @@ function populateTabs() {
         var target = $(e.target).attr("href")
         if (target == '#dept-retention') {
             populateDeptRetentionTab()
-        }
-        else if (target == '#common-records') {
+        } else if (target == '#common-records') {
             populateCommonRecordsTab()
-        }
-        else if (target == '#unique-records') {
+        } else if (target == '#unique-records') {
             $('#finished').prop("disabled", "disabled")
             populateUniqueRecordsTab()
         }
@@ -148,70 +151,74 @@ function populateDeptRetentionTab() {
         for (var i = 0; i < depts.length; i++) {
             if (deptParam == depts[i]) {
                 optionsStr += '<option value=' + depts[i] + ' selected>' + depts[i] + ' - ' + deptNameLookup[depts[i]] + '</option>'
-            }
-            else {
+            } else {
                 optionsStr += '<option value=' + depts[i] + '>' + depts[i] + ' - ' + deptNameLookup[depts[i]] + '</option>'
             }
         }
         $('#retention-dropdown').html(optionsStr)
 
-        // loads dept retention schedule if dept was previously selected and page reloaded, else alerts user to select a department
+        // loads dept retention schedule if dept was previously selected and page
+        // reloaded, else alerts user to select a department
         if ($('#retention-dropdown option:selected').text() != 'Select a department') {
             loadRetentionSchedule(deptParam)
-        }
-        else {
-            $('#ret-table-alert').html('</br><div class="alert alert-info" role="alert">Please select a department above</div>')
+        } else {
+            $('#ret-table-alert').html('</br><div class="alert alert-info" role="alert">Please select a department above' +
+                    '</div>')
         }
 
-        // when user selects dept, retention schedule is loaded for selected dept, and dept appended to URL to remember dept number on page reload
-        $('#retention-dropdown').on('change', function () {
-            var dept = $(this).val().slice(0, 3)
-            var currentURL = location.href
-            if (currentURL.indexOf('&dept=') != -1) {
-                currentURL = currentURL.slice(0, -9)
-            }
-            location.replace(currentURL + '&dept=' + dept)
-        })
-    }
-
-    // loads retention schedule immediately if user is liaison of only one department
-    else if (depts.length == 1) {
+        // when user selects dept, retention schedule is loaded for selected dept, and
+        // dept appended to URL to remember dept number on page reload
+        $('#retention-dropdown')
+            .on('change', function () {
+                var dept = $(this)
+                    .val()
+                    .slice(0, 3)
+                var currentURL = location.href
+                if (currentURL.indexOf('&dept=') != -1) {
+                    currentURL = currentURL.slice(0, -9)
+                }
+                location.replace(currentURL + '&dept=' + dept)
+            }) // loads retention schedule immediately if user is liaison of only one
+        // department
+    } else if (depts.length == 1) {
         deptParam = depts[0]
         $('#retention-dropdown').html('<option value=' + deptParam + ' selected>' + deptParam + ' - ' + deptNameLookup[deptParam] + '</option>')
-        loadRetentionSchedule(deptParam)
-    }
-
-    // populates drop-down list with depts of which user is a liaison and adds on-change event
-    else {
+        loadRetentionSchedule(deptParam) // populates drop-down list with depts of which user is a liaison and adds
+        // on-change event
+    } else {
         var optionsStr = ''
         optionsStr += '<option disabled selected>Select a department</option>'
         for (var i = 0; i < depts.length; i++) {
             if (deptParam == depts[i]) {
                 optionsStr += '<option value=' + depts[i] + ' selected>' + depts[i] + ' - ' + deptNameLookup[depts[i]] + '</option>'
-            }
-            else {
+            } else {
                 optionsStr += '<option value=' + depts[i] + '>' + depts[i] + ' - ' + deptNameLookup[depts[i]] + '</option>'
             }
         }
 
-        // loads dept retention schedule if dept was previously selected and page reloaded, else alerts user to select a department
+        // loads dept retention schedule if dept was previously selected and page
+        // reloaded, else alerts user to select a department
         $('#retention-dropdown').html(optionsStr)
         if ($('#retention-dropdown option:selected').text() != 'Select a department') {
             loadRetentionSchedule(deptParam)
-        }
-        else {
-            $('#ret-table-alert').html('</br><div class="alert alert-info" role="alert">Please select a department above</div>')
+        } else {
+            $('#ret-table-alert').html('</br><div class="alert alert-info" role="alert">Please select a department above' +
+                    '</div>')
         }
 
-        // when user selects dept, retention schedule is loaded for selected dept, and dept appended to URL to remember dept number on page reload
-        $('#retention-dropdown').on('change', function () {
-            var dept = $(this).val().slice(0, 3)
-            var currentURL = location.href
-            if (currentURL.indexOf('&dept=') != -1) {
-                currentURL = currentURL.slice(0, -9)
-            }
-            location.replace(currentURL + '&dept=' + dept)
-        })
+        // when user selects dept, retention schedule is loaded for selected dept, and
+        // dept appended to URL to remember dept number on page reload
+        $('#retention-dropdown')
+            .on('change', function () {
+                var dept = $(this)
+                    .val()
+                    .slice(0, 3)
+                var currentURL = location.href
+                if (currentURL.indexOf('&dept=') != -1) {
+                    currentURL = currentURL.slice(0, -9)
+                }
+                location.replace(currentURL + '&dept=' + dept)
+            })
     }
 }
 
@@ -223,121 +230,224 @@ function setModals() {
 
     // the 'Edit Details' dialog box is formatted
     $('#dept-retention').append('<div id="myModal" class="modal fade" role="dialog"> \
-                              <div class="modal-dialog"> \
-                                <div class="modal-content"> \
+                          ' +
+            '    <div class="modal-dialog"> \
+                                <div class="mod' +
+            'al-content"> \
                                   <div class="modal-header"> \
-                                    <h4 class="modal-title">Edit</h4> \
-                                  </div> \
-                                  <div class="modal-body"> \
-                                    <form class="form-horizontal"> \
-                                      <div class="form-group" style="display:none"> \
-                                        <label class="control-label col-sm-3" for="r-code">Code: </label> \
+  ' +
+            '                                  <h4 class="modal-title">Edit</h4> \
+          ' +
+            '                        </div> \
+                                  <div class="m' +
+            'odal-body"> \
+                                    <form class="form-horizontal">' +
+            ' \
+                                      <div class="form-group" style="display:' +
+            'none"> \
+                                        <label class="control-label col' +
+            '-sm-3" for="r-code">Code: </label> \
+                                        <di' +
+            'v class="col-sm-7"> \
+                                          <input type="tex' +
+            't" class="form-control" id="r-code" disabled> \
+                                ' +
+            '        </div> \
+                                      </div> \
+                ' +
+            '                      <div class="form-group"> \
+                               ' +
+            '         <label class="control-label col-sm-3" for="r-type">Record Type: </label' +
+            '> \
                                         <div class="col-sm-7"> \
-                                          <input type="text" class="form-control" id="r-code" disabled> \
+           ' +
+            '                               <input type="text" class="form-control" id="r-typ' +
+            'e"> \
                                         </div> \
+                         ' +
+            '             </div> \
+                                      <div class="form-gro' +
+            'up"> \
+                                        <label class="control-label col-s' +
+            'm-3" for="r-func">Function: </label> \
+                                        <' +
+            'div class="col-sm-7"> \
+                                          <select class=' +
+            '"form-control" id="r-func"></select> \
+                                        <' +
+            '/div> \
                                       </div> \
+                         ' +
+            '             <div class="form-group"> \
+                                        ' +
+            '<label class="control-label col-sm-3" for="r-cat">Record Category: </label> \
+  ' +
+            '                                      <div class="col-sm-7"> \
+                 ' +
+            '                         <select class="form-control" id="r-cat" disabled></sele' +
+            'ct> \
+                                        </div> \
+                         ' +
+            '             </div> \
+                                      <div class="form-gro' +
+            'up"> \
+                                        <label class="control-label col-s' +
+            'm-3" for="r-ret">Retention: </label> \
+                                        <' +
+            'div class="col-sm-7"> \
+                                          <textarea styl' +
+            'e="resize:none" class="form-control" id="r-ret" disabled></textarea> \
+         ' +
+            '                               </div> \
+                                      </' +
+            'div> \
                                       <div class="form-group"> \
-                                        <label class="control-label col-sm-3" for="r-type">Record Type: </label> \
+        ' +
+            '                                <label class="control-label col-sm-3" for="r-exc' +
+            '">Exception: </label> \
+                                        <div class="col-' +
+            'sm-7"> \
+                                          <textarea style="resize:none"' +
+            ' class="form-control" id="r-exc" disabled></textarea> \
+                        ' +
+            '                </div> \
+                                      </div> \
+        ' +
+            '                              <div class="form-group"> \
+                       ' +
+            '                 <label class="control-label col-sm-3" for="cmts-plan">Comments ' +
+            '/ Plan: </label> \
+                                        <div class="col-sm-7"' +
+            '> \
+                                          <textarea style="resize:none" clas' +
+            's="form-control" id="cmts-plan"></textarea> \
+                                  ' +
+            '      </div> \
+                                      </div> \
+                  ' +
+            '                    <div class="form-group"> \
+                                 ' +
+            '       <label class="control-label col-sm-3" for="admin-msg">Message to Administ' +
+            'rator: </label> \
+                                        <div class="col-sm-7">' +
+            ' \
+                                          <textarea style="resize:none" class' +
+            '="form-control" id="admin-msg"></textarea> \
+                                   ' +
+            '     </div> \
+                                      </div> \
+                   ' +
+            '                   <div class="form-group"> \
+                                  ' +
+            '      <label class="control-label col-sm-3" for="admin-cmts">Message from Admini' +
+            'strator: </label> \
+                                        <div class="col-sm-7' +
+            '"> \
+                                          <textarea style="resize:none" cla' +
+            'ss="form-control" id="admin-cmts" disabled></textarea> \
+                       ' +
+            '                 </div> \
+                                      </div> \
+       ' +
+            '                               <div class="form-group"> \
+                      ' +
+            '                  <label class="control-label col-sm-3" for="r-repo">Repository:' +
+            ' </label> \
                                         <div class="col-sm-7"> \
-                                          <input type="text" class="form-control" id="r-type"> \
+   ' +
+            '                                       <select class="form-control" id="r-repo">' +
+            '</select> \
                                         </div> \
+                   ' +
+            '                   </div> \
+                                      <div class="fo' +
+            'rm-group"> \
+                                        <div style="padding-left: 1' +
+            '1em"> \
+                                          <label><input type="checkbox" ' +
+            'value="" id="archival"> Archival</label> \
+                                     ' +
+            '   </div> \
                                       </div> \
+                     ' +
+            '                 <div class="form-group"> \
+                                    ' +
+            '    <div style="padding-left: 11em"> \
+                                         ' +
+            ' <label><input type="checkbox" value="" id="vital"> Vital</label> \
+            ' +
+            '                            </div> \
+                                      </div' +
+            '> \
                                       <div class="form-group"> \
-                                        <label class="control-label col-sm-3" for="r-func">Function: </label> \
-                                        <div class="col-sm-7"> \
-                                          <select class="form-control" id="r-func"></select> \
-                                        </div> \
+           ' +
+            '                             <div style="padding-left: 11em"> \
+                ' +
+            '                          <label><input type="checkbox" value="" id="confidentia' +
+            'l"> Highly Confidential</label> \
+                                        </div>' +
+            ' \
                                       </div> \
-                                      <div class="form-group"> \
-                                        <label class="control-label col-sm-3" for="r-cat">Record Category: </label> \
-                                        <div class="col-sm-7"> \
-                                          <select class="form-control" id="r-cat" disabled></select> \
+                              ' +
+            '        <div class="form-group"> \
+                                        <labe' +
+            'l class="control-label col-sm-3" for="blank"></label> \
+                        ' +
+            '                <div class="col-sm-7"> \
+                                       ' +
+            '   <span style="font-size: .75em; color:gray">*Changing function, category, or u' +
+            'ser comments to admin will set the record as pending and will require admin appr' +
+            'oval.</span>\
                                         </div> \
-                                      </div> \
-                                      <div class="form-group"> \
-                                        <label class="control-label col-sm-3" for="r-ret">Retention: </label> \
-                                        <div class="col-sm-7"> \
-                                          <textarea style="resize:none" class="form-control" id="r-ret" disabled></textarea> \
-                                        </div> \
-                                      </div> \
-                                      <div class="form-group"> \
-                                        <label class="control-label col-sm-3" for="r-exc">Exception: </label> \
-                                        <div class="col-sm-7"> \
-                                          <textarea style="resize:none" class="form-control" id="r-exc" disabled></textarea> \
-                                        </div> \
-                                      </div> \
-                                      <div class="form-group"> \
-                                        <label class="control-label col-sm-3" for="cmts-plan">Comments / Plan: </label> \
-                                        <div class="col-sm-7"> \
-                                          <textarea style="resize:none" class="form-control" id="cmts-plan"></textarea> \
-                                        </div> \
-                                      </div> \
-                                      <div class="form-group"> \
-                                        <label class="control-label col-sm-3" for="admin-msg">Message to Administrator: </label> \
-                                        <div class="col-sm-7"> \
-                                          <textarea style="resize:none" class="form-control" id="admin-msg"></textarea> \
-                                        </div> \
-                                      </div> \
-                                      <div class="form-group"> \
-                                        <label class="control-label col-sm-3" for="admin-cmts">Message from Administrator: </label> \
-                                        <div class="col-sm-7"> \
-                                          <textarea style="resize:none" class="form-control" id="admin-cmts" disabled></textarea> \
-                                        </div> \
-                                      </div> \
-                                      <div class="form-group"> \
-                                        <label class="control-label col-sm-3" for="r-repo">Repository: </label> \
-                                        <div class="col-sm-7"> \
-                                          <select class="form-control" id="r-repo"></select> \
-                                        </div> \
-                                      </div> \
-                                      <div class="form-group"> \
-                                        <div style="padding-left: 11em"> \
-                                          <label><input type="checkbox" value="" id="archival"> Archival</label> \
-                                        </div> \
-                                      </div> \
-                                      <div class="form-group"> \
-                                        <div style="padding-left: 11em"> \
-                                          <label><input type="checkbox" value="" id="vital"> Vital</label> \
-                                        </div> \
-                                      </div> \
-                                      <div class="form-group"> \
-                                        <div style="padding-left: 11em"> \
-                                          <label><input type="checkbox" value="" id="confidential"> Highly Confidential</label> \
-                                        </div> \
-                                      </div> \
-                                      <div class="form-group"> \
-                                        <label class="control-label col-sm-3" for="blank"></label> \
-                                        <div class="col-sm-7"> \
-                                          <span style="font-size: .75em; color:gray">*Changing function, category, or user comments to admin will set the record as pending and will require admin approval.</span>\
-                                        </div> \
-                                      </div> \
+                 ' +
+            '                     </div> \
                                     </form> \
+    ' +
+            '                              </div> \
+                                  <div cl' +
+            'ass="modal-footer"> \
+                                    <button type="button" ' +
+            'class="btn btn-default" id="saveRecord">Save</button> \
+                        ' +
+            '            <button type="button" class="btn btn-default" data-dismiss="modal">C' +
+            'lose</button> \
                                   </div> \
-                                  <div class="modal-footer"> \
-                                    <button type="button" class="btn btn-default" id="saveRecord">Save</button> \
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> \
-                                  </div> \
-                                </div> \
+                     ' +
+            '           </div> \
                               </div> \
-                            </div>')
+                     ' +
+            '       </div>')
 
     // the 'Delete' dialog box is formatted
     $('#dept-retention').append('<div id="delete-modal" class="modal fade" role="dialog"> \
-                              <div class="modal-dialog"> \
-                                <div class="modal-content"> \
-                                  <div class="modal-header"> \
-                                    <h4 class="modal-title">Delete Record</h4> \
+                     ' +
+            '         <div class="modal-dialog"> \
+                                <div class' +
+            '="modal-content"> \
+                                  <div class="modal-header">' +
+            ' \
+                                    <h4 class="modal-title">Delete Record</h4' +
+            '> \
                                   </div> \
-                                  <div class="modal-body"> \
-                                    <h3>Are you sure you want to delete this record?</h3> \
-                                    </br><h5>All user comments will be lost.</p> \
-                                  </div> \
+                                 ' +
+            ' <div class="modal-body"> \
+                                    <h3>Are you sure' +
+            ' you want to delete this record?</h3> \
+                                    </br' +
+            '><h5>All user comments will be lost.</p> \
+                                  </d' +
+            'iv> \
                                   <div class="modal-footer"> \
-                                    <button type="button" class="btn btn-default" id="ok-delete">OK</button> \
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button> \
-                                  </div> \
+           ' +
+            '                         <button type="button" class="btn btn-default" id="ok-de' +
+            'lete">OK</button> \
+                                    <button type="button" cl' +
+            'ass="btn btn-default" data-dismiss="modal">Cancel</button> \
+                   ' +
+            '               </div> \
                                 </div> \
-                              </div> \
+               ' +
+            '               </div> \
                             </div>')
 }
 
@@ -355,7 +465,8 @@ async function loadRetentionSchedule(dept) {
     // retrieves all dept records for given dept
     deptRecords = await util.getRecordsByDept(dept)
 
-    // searches through completeness list to find correct record based on Dept Number
+    // searches through completeness list to find correct record based on Dept
+    // Number
     var element
     for (var i = 0; i < completeness.length; i++) {
         if (completeness[i]['Department_x0020_Number'] == dept) {
@@ -384,8 +495,7 @@ async function loadRetentionSchedule(dept) {
         var drsComplete
         if ($(this).is(':checked')) {
             drsComplete = 'Yes'
-        }
-        else {
+        } else {
             drsComplete = 'No'
         }
         setDRS(theID, drsComplete)
@@ -396,8 +506,7 @@ async function loadRetentionSchedule(dept) {
         var reviewComplete
         if ($(this).is(':checked')) {
             reviewComplete = 'Yes'
-        }
-        else {
+        } else {
             reviewComplete = 'No'
         }
         setReview(theID, reviewComplete)
@@ -406,17 +515,24 @@ async function loadRetentionSchedule(dept) {
     // alerts user if no records have been submitted for given department
     if (deptRecords == "None") {
         $('#dept-ret-table').empty()
-        $('#ret-table-alert').html('</br><div class="alert alert-info" role="alert">No records have been identified for this department. \
-                                                                                Please select the "Add Common Records" tab first to select \
-                                                                                records found in your department. Then add records unique to your \
-                                                                                department by selecting the "Add Unique Records" tab.</div>')
+        $('#ret-table-alert').html('</br><div class="alert alert-info" role="alert">No records have been identified ' +
+                'for this department. \
+                                                         ' +
+                '                       Please select the "Add Common Records" tab first to selec' +
+                't \
+                                                                            ' +
+                '    records found in your department. Then add records unique to your \
+        ' +
+                '                                                                        departme' +
+                'nt by selecting the "Add Unique Records" tab.</div>')
         return
     }
 
     // department has at least one record
     $('#ret-table-alert').empty()
 
-    // retreives list data row by row from Dept Retention Schedule and adds each attribute to a new HTML row
+    // retreives list data row by row from Dept Retention Schedule and adds each
+    // attribute to a new HTML row
     var tableRows = ''
     itemIDLookup = {}
     for (var i = 0; i < deptRecords.length; i++) {
@@ -432,7 +548,8 @@ async function loadRetentionSchedule(dept) {
         var recCatID = deptRecords[i]['Record_x0020_Category_x0020_ID']
         var tempGenRec
 
-        // iterates through General Retention to find corresponding record to get correct metadata
+        // iterates through General Retention to find corresponding record to get
+        // correct metadata
         for (var j = 0; j < genRetention.length; j++) {
             if (isCommon) {
                 break
@@ -454,18 +571,15 @@ async function loadRetentionSchedule(dept) {
             recordFunction = ''
             recordCategory = ''
             retention = ''
-        }
-        else {
+        } else {
 
             // look up values from Common Records list if record is common
             if (code.charAt(0) == 'C') {
                 retention = commonRetentionLookup[code]
                 recordFunction = commonFunctionLookup[code]
-                recordCategory = ''
-            }
-
-            // look up values from General Retention list if record is unique
-            else {
+                recordCategory = // look up values from General Retention list if record is unique
+                ''
+            } else {
                 retention = tempGenRec['Retention_x0020_Description']
                 recordCategory = tempGenRec['Record_x0020_Category']
                 recordFunction = tempGenRec['Function']
@@ -498,12 +612,14 @@ async function loadRetentionSchedule(dept) {
         tableRows += '<td>' + exception + '</td>'
         tableRows += '<td>' + commentsPlan + '</td>'
         if (newMessage == 'Yes') {
-            tableRows += '<td><button type="button" class="btn-xs btn-success editDetails">New Message</button></td>'
+            tableRows += '<td><button type="button" class="btn-xs btn-success editDetails">New Message</bu' +
+                    'tton></td>'
+        } else {
+            tableRows += '<td><button type="button" class="btn-xs btn-primary editDetails">Edit</button></' +
+                    'td>'
         }
-        else {
-            tableRows += '<td><button type="button" class="btn-xs btn-primary editDetails">Edit</button></td>'
-        }
-        tableRows += '<td><button type="button" class="btn-xs btn-primary deleteRecord">Delete</button></td>'
+        tableRows += '<td><button type="button" class="btn-xs btn-primary deleteRecord">Delete</button' +
+                '></td>'
         tableRows += '<td>' + status + '</td>'
         tableRows += '<td style="display:none">' + archival + '</td>'
         tableRows += '<td style="display:none">' + vital + '</td>'
@@ -513,10 +629,19 @@ async function loadRetentionSchedule(dept) {
 
     // defines HTML table and columns, and adds rows defined above
     $('#dept-ret-table').html('</br>')
-    var tableStr = '<div style="overflow-x:scroll" width="1500px"><table class="table table-striped" id="pendingTable" style="width:100%"><thead><tr><th style="display:none">Code</th><th style="display:none">Function</th> \
-                  <th>Record Type</th><th style="display:none">Category ID</th><th style="display:none">Record Category</th><th><div style="width:10em">Retention</div></th> \
-                  <th><div style="width:10em">Exception</div></th><th><div style="width:10em">Comments / Plan</div></th><th></th><th></th><th>Status</th><th style="display:none">Archival</th> \
-                  <th style="display:none">Vital</th><th style="display:none">Highly Confidential</th><th style="display:none">Repository</th></tr></thead><tbody>' + tableRows + '</tbody></table></br></div>'
+    var tableStr = '<div style="overflow-x:scroll" width="1500px"><table class="table table-striped"' +
+            ' id="pendingTable" style="width:100%"><thead><tr><th style="display:none">Code</' +
+            'th><th style="display:none">Function</th> \
+                  <th>Record Type</t' +
+            'h><th style="display:none">Category ID</th><th style="display:none">Record Categ' +
+            'ory</th><th><div style="width:10em">Retention</div></th> \
+                  <th' +
+            '><div style="width:10em">Exception</div></th><th><div style="width:10em">Comment' +
+            's / Plan</div></th><th></th><th></th><th>Status</th><th style="display:none">Arc' +
+            'hival</th> \
+                  <th style="display:none">Vital</th><th style="dis' +
+            'play:none">Highly Confidential</th><th style="display:none">Repository</th></tr>' +
+            '</thead><tbody>' + tableRows + '</tbody></table></br></div>'
 
     // adds table to div defined above, and adds download button below table
     $('#dept-ret-table').append(tableStr)
@@ -532,8 +657,11 @@ async function loadRetentionSchedule(dept) {
     // adds on-change event to #r-cat value in 'Edit Details' dialog box
     $('#r-cat').on('change', function () {
 
-        // extracts Record Category ID from #r-cat to find associated record in General Retention Schedule
-        var newCatID = $(this).val().substring(0, 5)
+        // extracts Record Category ID from #r-cat to find associated record in General
+        // Retention Schedule
+        var newCatID = $(this)
+            .val()
+            .substring(0, 5)
         var tempRecord
         for (var i = 0; i < genRetention.length; i++) {
             tempRecord = genRetention[i]
@@ -542,20 +670,20 @@ async function loadRetentionSchedule(dept) {
             }
         }
 
-        // if the Record Category changes to empty string, set function and retention to empty string
+        // if the Record Category changes to empty string, set function and retention to
+        // empty string
         if ($('#r-cat').val() == '' || $('#r-cat').val() == null) {
             $('#r-func').val('')
-            $('#r-ret').val('')
-        }
-
-        // else, get the associated Function and Retention and add them to the associated textboxes
-        else {
+            $('#r-ret').val('') // else, get the associated Function and Retention and add them to the
+            // associated textboxes
+        } else {
             $('#r-func').val(tempRecord['Function'])
             $('#r-ret').val(tempRecord['Retention_x0020_Description'])
         }
     })
 
-    // adds on-click function to 'Edit Details', populates it with associated table data, and adds buttons to Save or Cancel
+    // adds on-click function to 'Edit Details', populates it with associated table
+    // data, and adds buttons to Save or Cancel
     $('.editDetails').click(function () {
 
         // changes color and text of button if there is a message from the Admin
@@ -568,7 +696,8 @@ async function loadRetentionSchedule(dept) {
         // changes global variable to row which was selected
         row = $(this).closest('tr')
 
-        // empties out textboxes/drop-downs and disables drop-downs just in case the record is common
+        // empties out textboxes/drop-downs and disables drop-downs just in case the
+        // record is common
         $('#r-cat').empty()
         $('#r-repo').empty()
         $('#r-func').empty()
@@ -592,16 +721,26 @@ async function loadRetentionSchedule(dept) {
         categoryList.sort()
 
         // saves variables from table to compare with updated values upon submit
-        var temp_id = $(this).closest('tr').children()[3].innerText
-        var temp_func = $(this).closest('tr').children()[1].innerText
-        var temp_repo = $(this).closest('tr').children()[14].innerText
+        var temp_id = $(this)
+            .closest('tr')
+            .children()[3]
+            .innerText
+        var temp_func = $(this)
+            .closest('tr')
+            .children()[1]
+            .innerText
+        var temp_repo = $(this)
+            .closest('tr')
+            .children()[14]
+            .innerText
 
         // loads values in dialog (if present in table)
         $('#r-code').val($(this).closest('tr').children()[0].innerText)
         $('#r-type').val($(this).closest('tr').children()[2].innerText)
         $('#r-ret').val($(this).closest('tr').children()[5].innerText)
 
-        // creates options for function drop-down, and loads value in drop-down if record has a function defined
+        // creates options for function drop-down, and loads value in drop-down if
+        // record has a function defined
         var funcOptions = ''
         funcOptions += '<option disabled selected="selected">Select a function</option>'
         funcOptions += '<option></option>'
@@ -610,8 +749,7 @@ async function loadRetentionSchedule(dept) {
         for (var i = 0; i < funcList.length; i++) {
             if (temp_func == funcList[i]) {
                 funcOptions += '<option selected="selected">'
-            }
-            else {
+            } else {
                 funcOptions += '<option>'
             }
             funcOptions += funcList[i]
@@ -620,14 +758,14 @@ async function loadRetentionSchedule(dept) {
         $('#r-func').empty()
         $('#r-func').append(funcOptions)
 
-        // creates options for repo drop-down, and loads value in drop-down if record has a repo defined
+        // creates options for repo drop-down, and loads value in drop-down if record
+        // has a repo defined
         var repoOptions = ''
         repoOptions += '<option disabled selected="selected">Select a repository</option>'
         for (var i = 0; i < repos.length; i++) {
             if (temp_repo == repos[i]['Repository']) {
                 repoOptions += '<option selected="selected">'
-            }
-            else {
+            } else {
                 repoOptions += '<option>'
             }
             repoOptions += repos[i]['Repository']
@@ -636,10 +774,20 @@ async function loadRetentionSchedule(dept) {
         $('#r-repo').empty()
         $('#r-repo').append(repoOptions)
 
-        // checks table for archival, vital, and highly confidential - checks corresponding boxes accordingly
-        var archival = $(this).closest('tr').children()[11].innerText
-        var vital = $(this).closest('tr').children()[12].innerText
-        var highlyConfidential = $(this).closest('tr').children()[13].innerText
+        // checks table for archival, vital, and highly confidential - checks
+        // corresponding boxes accordingly
+        var archival = $(this)
+            .closest('tr')
+            .children()[11]
+            .innerText
+        var vital = $(this)
+            .closest('tr')
+            .children()[12]
+            .innerText
+        var highlyConfidential = $(this)
+            .closest('tr')
+            .children()[13]
+            .innerText
         if (archival == 'Yes') {
             $('#archival').prop('checked', true)
         }
@@ -650,15 +798,15 @@ async function loadRetentionSchedule(dept) {
             $('#confidential').prop('checked', true)
         }
 
-        // enables Record Category drop-down and populates it if Function has been selected
+        // enables Record Category drop-down and populates it if Function has been
+        // selected
         if ($('#r-func').val() != 'Select a function' && $('#r-func').val() != '' && $('#r-func').val() != null) {
             $('#r-cat').prop('disabled', false)
             var catOptions = '<option selected="selected" disabled>Select a category</option><option></option>'
             for (var i = 0; i < generalFunctionLookup[temp_func].length; i++) {
                 if (generalFunctionLookup[temp_func][i].substring(0, 5) == temp_id) {
                     catOptions += '<option selected="selected">'
-                }
-                else {
+                } else {
                     catOptions += '<option>'
                 }
                 catOptions += generalFunctionLookup[temp_func][i]
@@ -691,14 +839,14 @@ async function loadRetentionSchedule(dept) {
         initialUserCmts = $('#admin-msg').val()
         initialFunc = $('#r-func').val()
 
-        // if common record, don't allow user to change Record Type, Category, or Function
+        // if common record, don't allow user to change Record Type, Category, or
+        // Function
         if ($(this).closest('tr').children()[0].innerText.charAt(0) == 'C') {
             $('#r-type').prop('disabled', true)
             $('#r-cat').prop('disabled', true)
-            $('#r-func').prop('disabled', true)
-        }
-        // if unique record, allow user to change Record Type and Function
-        else {
+            $('#r-func').prop('disabled', true // if unique record, allow user to change Record Type and Function
+            )
+        } else {
             $('#r-type').prop('disabled', false)
             $('#r-func').prop('disabled', false)
         }
@@ -711,14 +859,16 @@ async function loadRetentionSchedule(dept) {
         $('#r-ret').val('')
         $('#r-cat').empty()
 
-        // if new function chosen is empty string, disable category drop-down and empty it
+        // if new function chosen is empty string, disable category drop-down and empty
+        // it
         if ($('#r-func').val() == '') {
             $('#r-cat').prop('disabled', true)
             $('#r-cat').val('')
             return
         }
 
-        // new function chosen is not empty - make options for categories and add them to drop-down
+        // new function chosen is not empty - make options for categories and add them
+        // to drop-down
         $('#r-cat').prop('disabled', false)
         var catOptions = '<option selected="selected" disabled>Select a category</option><option></option>'
         for (var i = 0; i < generalFunctionLookup[$('#r-func').val()].length; i++) {
@@ -741,10 +891,13 @@ async function loadRetentionSchedule(dept) {
         if ($('#r-cat option:selected').val() == 'Select a category' || $('#r-cat option:selected').val() == '' || $('#r-cat option:selected').val() == undefined) {
             newCatID = ''
             newCat = ''
-        }
-        else {
-            newCatID = $('#r-cat option:selected').val().substring(0, 5)
-            newCat = $('#r-cat option:selected').val().substring(8)
+        } else {
+            newCatID = $('#r-cat option:selected')
+                .val()
+                .substring(0, 5)
+            newCat = $('#r-cat option:selected')
+                .val()
+                .substring(8)
         }
         var newRet = $('#r-ret').val()
         var newCmtsPlan = $('#cmts-plan').val()
@@ -785,7 +938,8 @@ async function loadRetentionSchedule(dept) {
         $('#myModal').modal('hide')
     })
 
-    // adds on-click function to Delete button which opens modal and updates current row selected
+    // adds on-click function to Delete button which opens modal and updates current
+    // row selected
     $('.deleteRecord').click(function () {
         $('#delete-modal').modal('show')
         row = $(this).closest('tr')
@@ -812,43 +966,58 @@ function makePDF() {
 
     // creates title, headers, and a heading for the PDF
     var titleString = '\nDepartment Retention Schedule for Dept# ' + deptParam + ' - ' + deptNameLookup[deptParam]
-    var headers = [{ text: 'Record Type', style: 'tableHeader' }, { text: 'Retention', style: 'tableHeader' }, { text: 'Exception', style: 'tableHeader' }, { text: 'Archival', style: 'tableHeader' }, { text: 'Comments / Plan', style: 'tableHeader' }]
+    var headers = [
+        {
+            text: 'Record Type',
+            style: 'tableHeader'
+        }, {
+            text: 'Retention',
+            style: 'tableHeader'
+        }, {
+            text: 'Exception',
+            style: 'tableHeader'
+        }, {
+            text: 'Archival',
+            style: 'tableHeader'
+        }, {
+            text: 'Comments / Plan',
+            style: 'tableHeader'
+        }
+    ]
     var theBody = []
     var date = new Date()
     var dateStr = date.toDateString()
     theBody.push(headers)
 
-    // iterates through rows of table to retrieve values - adds value to PDF row if not empty
+    // iterates through rows of table to retrieve values - adds value to PDF row if
+    // not empty
     var rows = $('#dept-ret-table tr')
     for (var i = 1; i < rows.length; i++) {
         var tempRow = []
         var cells = $(rows[i])[0].childNodes
         if ($(cells)[2].innerText == '' || $(cells)[2].innerText == 'null' || $(cells)[2].innerText == null) {
             tempRow.push(' - ')
-        }
-        else {
+        } else {
             tempRow.push($(cells)[2].innerText)
         }
         if ($(cells)[5].innerText == '' || $(cells)[5].innerText == 'null' || $(cells)[5].innerText == null) {
             tempRow.push(' - ')
-        }
-        else {
+        } else {
             tempRow.push($(cells)[5].innerText)
         }
         if ($(cells)[6].innerText == '' || $(cells)[6].innerText == 'null' || $(cells)[6].innerText == null) {
             tempRow.push(' - ')
-        }
-        else {
+        } else {
             tempRow.push($(cells)[6].innerText)
         }
         if ($(cells)[11].innerText == 'Yes') {
             tempRow.push('Yes')
-        }
-        else {
+        } else {
             tempRow.push('No')
         }
 
-        // Adds repo, vital, and highly confidential to Comments section if not empty/checked
+        // Adds repo, vital, and highly confidential to Comments section if not
+        // empty/checked
         var comments = ''
         var hasComment = false
         var hasRepo = false
@@ -883,8 +1052,7 @@ function makePDF() {
         }
         if (!hasComment && !hasRepo && !isVital && !isConf) {
             tempRow.push(' - ')
-        }
-        else {
+        } else {
             tempRow.push(comments)
         }
 
@@ -896,28 +1064,41 @@ function makePDF() {
     var dd = {
         title: 'Department Retention Schedule',
         footer: function (currentPage, pageCount) {
-            return { text: currentPage.toString() + ' of ' + pageCount, alignment: 'center' }
+            return {
+                text: currentPage.toString() + ' of ' + pageCount,
+                alignment: 'center'
+            }
         },
         pageOrientation: 'landscape',
         content: [
-            { text: 'University Records & Information Management\nDate Printed: ' + dateStr, style: 'header' },
-            { text: titleString, style: 'title' },
-            '\n\n',
             {
+                text: 'University Records & Information Management\nDate Printed: ' + dateStr,
+                style: 'header'
+            }, {
+                text: titleString,
+                style: 'title'
+            },
+            '\n\n', {
                 columns: [
-                    { width: '*', text: '' },
                     {
+                        width: '*',
+                        text: ''
+                    }, {
                         style: 'table',
                         width: 'auto',
                         table: {
-                            widths: ['*', '*', 75, 30, '*'],
+                            widths: [
+                                '*', '*', 75, 30, '*'
+                            ],
                             body: theBody
                         },
                         layout: 'lightHorizontalLines'
-                    },
-                    { width: '*', text: '' }
+                    }, {
+                        width: '*',
+                        text: ''
+                    }
                 ]
-            },
+            }
         ],
         styles: {
             header: {
@@ -940,7 +1121,9 @@ function makePDF() {
     }
 
     // after creation, PDF will be downloaded automatically
-    pdfMake.createPdf(dd).download('DRS.pdf')
+    pdfMake
+        .createPdf(dd)
+        .download('DRS.pdf')
 }
 
 // deletes record based on ID passed in
@@ -987,12 +1170,11 @@ async function populateCommonRecordsTab() {
     if (depts.length > 1) {
         if ($('#retention-dropdown option:selected').text() != 'Select a department') {
             addCommonRecordsTable(deptParam)
+        } else {
+            $('#common-records-alert').html('</br><div class="alert alert-info" role="alert">Please select a department above' +
+                    '</div>')
         }
-        else {
-            $('#common-records-alert').html('</br><div class="alert alert-info" role="alert">Please select a department above</div>')
-        }
-    }
-    else {
+    } else {
         addCommonRecordsTable(deptParam)
     }
 }
@@ -1009,11 +1191,12 @@ async function addCommonRecordsTable(dept, searchTerm) {
     var tableRows = ''
     // creates all rows for common records table
     for (var i = 0; i < commonRecordsList.length; i++) {
+
         tableRows += '<tr id="commonrow' + i + '"><td style="display:none">' + commonRecordsList[i]['Code'] + '</td>'
         if (deptIDList.indexOf(commonRecordsList[i]['Code']) > -1) {
-            tableRows += '<td><input title="To delete a record, go to the Department Retention Schedule tab" type="checkbox" id="chkbx' + i + '" checked disabled></td>'
-        }
-        else {
+            tableRows += '<td><input title="To delete a record, go to the Department Retention Schedule ta' +
+                    'b" type="checkbox" id="chkbx' + i + '" checked disabled></td>'
+        } else {
             tableRows += '<td><input type="checkbox" id="chkbx' + i + '"></td>'
         }
         tableRows += '<td>' + commonRecordsList[i]['Function'] + '</td>'
@@ -1028,8 +1211,11 @@ async function addCommonRecordsTable(dept, searchTerm) {
     }
     // adds table to Common Records tab
     $('#common-table').empty()
-    $('#common-table').html('</br><table class="table table-striped" id="common-table"><thead><tr><th style="display:none">Code</th><th>Select</th><th>Function</th><th>Record Type</th> \
-                                <th>Retention Description</th><th>Archival</th></tr></thead><tbody>' + tableRows + '</tbody></table>')
+    $('#common-table').html('</br><table class="table table-striped" id="common-table"><thead><tr><th style="' +
+            'display:none">Code</th><th>Select</th><th>Function</th><th>Record Type</th> \
+  ' +
+            '                              <th>Retention Description</th><th>Archival</th></t' +
+            'r></thead><tbody>' + tableRows + '</tbody></table>')
     // adds buttons below
     addCommonSubmitButton(deptRecords, deptIDList, commonRecordsList.length, idLookup, dept)
 }
@@ -1038,7 +1224,8 @@ function addCommonSubmitButton(deptRecords, deptIDList, length, idLookup, dept) 
     // adds buttons to Common Records tab below table
     $('#common-buttons').empty()
     $('#common-buttons').append('<div id="submit-alert"></div></br>')
-    $('#common-buttons').append('<div class="btn-group"><button type="button" class="btn btn-primary" id="common-submit">Submit</button></div>')
+    $('#common-buttons').append('<div class="btn-group"><button type="button" class="btn btn-primary" id="common-' +
+            'submit">Submit</button></div>')
     // adds events to button clicks
     $('#common-submit').click(function () {
         $('#submit-alert').html('')
@@ -1066,14 +1253,13 @@ function addCommonSubmitButton(deptRecords, deptIDList, length, idLookup, dept) 
                 $('#submit-alert').html('</br><div class="alert alert-info" role="alert">Processing...</div>')
                 if (i == addRows.length - 1) {
                     addCommonRecord(dept, rowNum, tempCode, tempFunc, tempType, tempArch, 1)
-                }
-                else {
+                } else {
                     addCommonRecord(dept, rowNum, tempCode, tempFunc, tempType, tempArch, 0)
                 }
             }
-        }
-        else {
-            $('#submit-alert').html('<div class="alert alert-info" role="alert">There were no records selected to be added.</div>')
+        } else {
+            $('#submit-alert').html('<div class="alert alert-info" role="alert">There were no records selected to be ' +
+                    'added.</div>')
         }
     })
 }
@@ -1092,12 +1278,11 @@ function populateUniqueRecordsTab() {
     if (depts.length > 1) {
         if ($('#retention-dropdown option:selected').text() != 'Select a department') {
             addUniqueFields(deptParam)
+        } else {
+            $('#unique-records-alert').html('</br><div class="alert alert-info" role="alert">Please select a department above' +
+                    '</div>')
         }
-        else {
-            $('#unique-records-alert').html('</br><div class="alert alert-info" role="alert">Please select a department above</div>')
-        }
-    }
-    else {
+    } else {
         addUniqueFields(deptParam)
     }
 }
@@ -1123,71 +1308,127 @@ async function addUniqueFields(dept) {
     }
 
     $('#unique-fields').append('</br></br><form class="form-horizontal"> \
-                                <div class="form-group"> \
-                                  <label class="control-label col-sm-2" for="rec-type">Record Type: <span id="red-ast">*</span></label> \
-                                  <div class="col-sm-8"> \
-                                    <input type="text" class="form-control" id="rec-type" placeholder="Enter record type"> \
+                                <div ' +
+            'class="form-group"> \
+                                  <label class="control-la' +
+            'bel col-sm-2" for="rec-type">Record Type: <span id="red-ast">*</span></label> \
+' +
+            '                                  <div class="col-sm-8"> \
+                     ' +
+            '               <input type="text" class="form-control" id="rec-type" placeholder' +
+            '="Enter record type"> \
                                   </div> \
-                                </div> \
-                                <div class="form-group"> \
-                                  <label class="control-label col-sm-2" for="rec-func">Proposed Function:</label> \
-                                  <div class="col-sm-8"> \
-                                    <select class="form-control" id="rec-func"> \
+             ' +
+            '                   </div> \
+                                <div class="form-gro' +
+            'up"> \
+                                  <label class="control-label col-sm-2" f' +
+            'or="rec-func">Proposed Function:</label> \
+                                  <di' +
+            'v class="col-sm-8"> \
+                                    <select class="form-co' +
+            'ntrol" id="rec-func"> \
                                       ' + options + ' \
                                     </select> \
-                                  </div> \
+                             ' +
+            '     </div> \
                                 </div> \
+                         ' +
+            '       <div class="form-group"> \
+                                  <label class' +
+            '="control-label col-sm-2" for="rec-cat">Proposed Category:</label> \
+           ' +
+            '                       <div class="col-sm-8"> \
+                                ' +
+            '    <select class="form-control" id="rec-cat" disabled> \
+                      ' +
+            '              </select> \
+                                  </div> \
+           ' +
+            '                     </div> \
+                                <div class="form-g' +
+            'roup"> \
+                                  <label class="control-label col-sm-2"' +
+            ' for="retention">Proposed Retention:</label> \
+                                 ' +
+            ' <div class="col-sm-8"> \
+                                    <textarea class="f' +
+            'orm-control" id="retention" rows="2" style="resize:none" disabled></textarea> \
+' +
+            '                                  </div> \
+                                </div' +
+            '> \
                                 <div class="form-group"> \
-                                  <label class="control-label col-sm-2" for="rec-cat">Proposed Category:</label> \
+                 ' +
+            '                 <label class="control-label col-sm-2" for="adminMsg">Message to' +
+            ' Administrator:</label> \
+                                  <div class="col-sm-8' +
+            '"> \
+                                    <textarea class="form-control" id="admi' +
+            'nMsg" rows="3" style="resize:none" placeholder="Type your message"></textarea> ' +
+            '\
+                                  </div> \
+                                </d' +
+            'iv> \
+                                <div class="form-group"> \
+               ' +
+            '                   <label class="control-label col-sm-2" for="commentsPlan">Comm' +
+            'ents / Plan:</label> \
+                                  <div class="col-sm-8"> ' +
+            '\
+                                    <textarea class="form-control" id="comment' +
+            'sPlan" rows="3" style="resize:none" placeholder="Type your comment"></textarea> ' +
+            '\
+                                  </div> \
+                                </d' +
+            'iv> \
+                                <div class="form-group"> \
+               ' +
+            '                   <label class="control-label col-sm-2" for="rec-repo">Reposito' +
+            'ry: </label> \
                                   <div class="col-sm-8"> \
-                                    <select class="form-control" id="rec-cat" disabled> \
+      ' +
+            '                              <select class="form-control" id="rec-repo"> \
+    ' +
+            '                                  ' + repoOptions + ' \
                                     </select> \
+                             ' +
+            '     </div> \
+                                </div> \
+                         ' +
+            '       <div class="form-group"> \
+                                  <div style="' +
+            'padding-left: 15em"> \
+                                    <label><input type="c' +
+            'heckbox" value="" id="archival-chkbx"> Archival</label> \
+                      ' +
+            '            </div> \
+                                </div> \
+                  ' +
+            '              <div class="form-group"> \
+                                  <div ' +
+            'style="padding-left: 15em"> \
+                                    <label><input ' +
+            'type="checkbox" value="" id="vital-chkbx"> Vital</label> \
+                     ' +
+            '             </div> \
+                                </div> \
+                 ' +
+            '               <div class="form-group"> \
+                                  <div' +
+            ' style="padding-left: 15em"> \
+                                    <label><input' +
+            ' type="checkbox" value="" id="confidential-chkbx"> Highly Confidential</label> ' +
+            '\
                                   </div> \
-                                </div> \
+                                </d' +
+            'iv> \
                                 <div class="form-group"> \
-                                  <label class="control-label col-sm-2" for="retention">Proposed Retention:</label> \
-                                  <div class="col-sm-8"> \
-                                    <textarea class="form-control" id="retention" rows="2" style="resize:none" disabled></textarea> \
-                                  </div> \
-                                </div> \
-                                <div class="form-group"> \
-                                  <label class="control-label col-sm-2" for="adminMsg">Message to Administrator:</label> \
-                                  <div class="col-sm-8"> \
-                                    <textarea class="form-control" id="adminMsg" rows="3" style="resize:none" placeholder="Type your message"></textarea> \
-                                  </div> \
-                                </div> \
-                                <div class="form-group"> \
-                                  <label class="control-label col-sm-2" for="commentsPlan">Comments / Plan:</label> \
-                                  <div class="col-sm-8"> \
-                                    <textarea class="form-control" id="commentsPlan" rows="3" style="resize:none" placeholder="Type your comment"></textarea> \
-                                  </div> \
-                                </div> \
-                                <div class="form-group"> \
-                                  <label class="control-label col-sm-2" for="rec-repo">Repository: </label> \
-                                  <div class="col-sm-8"> \
-                                    <select class="form-control" id="rec-repo"> \
-                                      ' + repoOptions + ' \
-                                    </select> \
-                                  </div> \
-                                </div> \
-                                <div class="form-group"> \
-                                  <div style="padding-left: 15em"> \
-                                    <label><input type="checkbox" value="" id="archival-chkbx"> Archival</label> \
-                                  </div> \
-                                </div> \
-                                <div class="form-group"> \
-                                  <div style="padding-left: 15em"> \
-                                    <label><input type="checkbox" value="" id="vital-chkbx"> Vital</label> \
-                                  </div> \
-                                </div> \
-                                <div class="form-group"> \
-                                  <div style="padding-left: 15em"> \
-                                    <label><input type="checkbox" value="" id="confidential-chkbx"> Highly Confidential</label> \
-                                  </div> \
-                                </div> \
-                                <div class="form-group"> \
-                                  <div style="padding-left: 8em"><span display="inline-block" id="red-ast">*</span> means required field</div> \
-                                </div> \
+               ' +
+            '                   <div style="padding-left: 8em"><span display="inline-block" i' +
+            'd="red-ast">*</span> means required field</div> \
+                              ' +
+            '  </div> \
                               </form>')
 
     $('#rec-func').change(function () {
@@ -1197,8 +1438,7 @@ async function addUniqueFields(dept) {
             $('#rec-cat').val('')
             $('#rec-cat').prop('disabled', true)
             return
-        }
-        else {
+        } else {
             var catOptions = '<option>Select a category</option><option></option>'
             for (var i = 0; i < generalFunctionLookup[$('#rec-func').val()].length; i++) {
                 catOptions += '<option>'
@@ -1211,8 +1451,12 @@ async function addUniqueFields(dept) {
     })
 
     $('#rec-cat').change(function () {
-        var index = $('#rec-cat').val().indexOf('-')
-        var category = $('#rec-cat').val().substring(index + 2)
+        var index = $('#rec-cat')
+            .val()
+            .indexOf('-')
+        var category = $('#rec-cat')
+            .val()
+            .substring(index + 2)
         $('#retention').val(generalRetentionLookup[category])
     })
 
@@ -1221,15 +1465,20 @@ async function addUniqueFields(dept) {
 
 function addUniqueSubmit(dept, size, itemID) {
     $('#unique-buttons').empty()
-    $('#unique-buttons').append('<div align="center"><button type="button" class="btn btn-primary" id="unique-submit">Submit</button> \
-    &ensp;<button type="button" class="btn btn-primary" id="finished" disabled>Finished</button></div>')
+    $('#unique-buttons').append('<div align="center"><button type="button" class="btn btn-primary" id="unique-sub' +
+            'mit">Submit</button> \
+    &ensp;<button type="button" class="btn btn-primary" i' +
+            'd="finished" disabled>Finished</button></div>')
     $('#unique-buttons').append('\n\n\n\n\n')
     // adds event handlers to buttons
     $('#unique-submit').click(function () {
         $('#unique-alert').empty()
         if ($('#rec-type').val() == '') {
-            $('#unique-alert').html('</br><div class="alert alert-warning" role="alert">Record Type cannot be left blank</div>')
-            setTimeout(function () { $('#unique-alert').empty() }, 5000)
+            $('#unique-alert').html('</br><div class="alert alert-warning" role="alert">Record Type cannot be left bl' +
+                    'ank</div>')
+            setTimeout(function () {
+                $('#unique-alert').empty()
+            }, 5000)
             return
         }
         var recRepo = $('#rec-repo option:selected').val()
@@ -1244,9 +1493,10 @@ function addUniqueSubmit(dept, size, itemID) {
         var recCat
         if ($('#rec-cat option:selected').val() == '' || $('#rec-cat option:selected').val() == null) {
             recCat = ''
-        }
-        else {
-            recCat = $('#rec-cat option:selected').val().substring(0, 5)
+        } else {
+            recCat = $('#rec-cat option:selected')
+                .val()
+                .substring(0, 5)
         }
         var adminMsg = $('#adminMsg').val()
         var commentsPlan = $('#commentsPlan').val()
@@ -1267,11 +1517,10 @@ function addUniqueSubmit(dept, size, itemID) {
         var code = 'U' + size
         $('#unique-alert').html('</br><div class="alert alert-info" role="alert">Processing...</div>')
         addUniqueRecord(dept, code, recType, recFunc, recCat, adminMsg, commentsPlan, highlyConfidential, vital, archival, recRepo)
-        size++
+        size++;
         if (itemID == -1) {
             addSize(dept, size.toString())
-        }
-        else {
+        } else {
             updateSize(itemID, size.toString())
         }
     })
